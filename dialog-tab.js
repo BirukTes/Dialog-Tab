@@ -1,5 +1,13 @@
-// Create a context menu item to call on link
-createContextMenuOption();
+setTimeout(function wait() {
+    const browser = document.getElementById('browser');
+    if (browser) {
+        // Create a context menu item to call on a link
+        createContextMenuOption();
+    }
+    else {
+        setTimeout(wait, 300);
+    }
+}, 300);
 
 // Opens a link in a dialog like display in the current visible tab
 function dialogTab(linkUrl) {
@@ -13,11 +21,12 @@ function dialogTab(linkUrl) {
     webview.style.borderRadius = "10px";
 
     webview.addEventListener("loadstart", function () {
-         this.style.backgroundColor = "white";
-         this.style.fontSize = "10rem";
-         this.style.textAlign = "center";
-         this.style.fontStyle = "grey";
-         this.textContent = "Loading...";
+        this.style.backgroundColor = "white";
+        this.style.fontSize = "10rem";
+        this.style.textAlign = "center";
+        this.style.color = "grey";
+        // May not be working
+        this.textContent = "Loading...";
     });
     webview.addEventListener("loadstop", function () {
         this.textContent = "";
@@ -33,14 +42,13 @@ function dialogTab(linkUrl) {
     divContainer.style.bottom = "0";
     divContainer.style.left = "0";
     divContainer.style.backgroundColor = "rgba(0,0,0,.4)";
-
-    const webpagecontainer = document.getElementsByClassName("active visible webpageview");
-    webpagecontainer[0].appendChild(divContainer);
-
     divContainer.style.transitionProperty = "background-color";
     divContainer.style.transitionDuration = "0.1s";
     divContainer.style.transitionTimingFunction = "ease";
     divContainer.style.transitionDelay = "0s";
+
+    const webpagecontainer = document.getElementsByClassName("active visible webpageview");
+    webpagecontainer[0].appendChild(divContainer);
 
     divContainer.addEventListener("click", function () {
         this.remove();
