@@ -15,8 +15,9 @@ function dialogTab(linkUrl) {
     var divOptionContainer = document.createElement("div");
     var divContainer = document.createElement("div");
 
-
+    //#region webview properties
     webview.setAttribute("src", linkUrl);
+    webview.id = ""
     webview.style.width = "80%";
     webview.style.height = "85%";
     webview.style.margin = "auto";
@@ -34,16 +35,20 @@ function dialogTab(linkUrl) {
     webview.addEventListener("loadstop", function () {
         this.textContent = "";
     });
-    
+    //#endregion 
+
+    //#region divOptionContainer properties
     divOptionContainer.style.height = "5%";
     divOptionContainer.style.width = "30px";
     divOptionContainer.style.margin = "auto";
     divOptionContainer.style.color = "white";
     divOptionContainer.innerHTML = getSvgContent();
-    
+    //#endregion
+
     divContainer.appendChild(webview);
     divContainer.appendChild(divOptionContainer);
 
+    //#region divContainer properties
     divContainer.setAttribute("class", "dialog-tab");
     divContainer.style.zIndex = "1060";
     divContainer.style.position = "fixed";
@@ -56,6 +61,7 @@ function dialogTab(linkUrl) {
     divContainer.style.transitionDuration = "0.1s";
     divContainer.style.transitionTimingFunction = "ease";
     divContainer.style.transitionDelay = "0s";
+    //#endregion
 
     const webpagecontainer = document.getElementsByClassName("active visible webpageview");
     // More than window open, have to be handled in some way as this will append to all of them 
@@ -64,6 +70,7 @@ function dialogTab(linkUrl) {
     divContainer.addEventListener("click", function () {
         this.remove();
     });
+    document.getElementById("optionsIco").addEventListener("click", showWebviewOptions());
 }
 
 // Creates context menu item for open in dialog tab
@@ -83,7 +90,22 @@ function createContextMenuOption() {
     });
 }
 
-// Returns string type ellipses svg 
-function getSvgContent() {
-    return "<svg aria-hidden=\"true\" focusable=\"false\" data-prefix=\"fas\" data-icon=\"ellipsis-h\" class=\"svg-inline--fa fa-ellipsis-h fa-w-16\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\"><path fill=\"currentColor\" d=\"M328 256c0 39.8-32.2 72-72 72s-72-32.2-72-72 32.2-72 72-72 72 32.2 72 72zm104-72c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72zm-352 0c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72z\"></path></svg>";
+function showWebviewOptions(webViewId) {
+    var webview = document.getElementById(webViewId);
 }
+
+function getRandomDialogId() {
+
+}
+
+function getWebviewId() {
+    var tempId = 0;
+    while (document.getElementById(tempId) !== undefined) {
+        tempId = Math.floor(Math.random() * 1000 + 1)
+    }
+    return tempId;
+}
+function getSvgContent() {
+    return "<svg id=\"optionsIco\" aria-hidden=\"true\" focusable=\"false\" data-prefix=\"fas\" data-icon=\"ellipsis-h\" class=\"svg-inline--fa fa-ellipsis-h fa-w-16\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\"><path fill=\"currentColor\" d=\"M328 256c0 39.8-32.2 72-72 72s-72-32.2-72-72 32.2-72 72-72 72 32.2 72 72zm104-72c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72zm-352 0c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72z\"></path></svg>";
+}
+
