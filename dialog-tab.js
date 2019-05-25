@@ -40,16 +40,17 @@ function dialogTab(linkUrl) {
 
     //#region divOptionContainer properties
     divOptionContainer.style.height = "5%";
-    divOptionContainer.style.width = "30px";
+    divOptionContainer.style.textAlign = "center";
     divOptionContainer.style.margin = "auto";
     divOptionContainer.style.color = "white";
+    divOptionContainer.style.zIndex = "1160";
     divOptionContainer.innerHTML = getSvgContent();
 
-    divOptionContainer.addEventListener("click", showWebviewOptions(webviewId));
+    divOptionContainer.addEventListener("mouseover", showWebviewOptions(webviewId, divOptionContainer));
     //#endregion
 
-    divContainer.appendChild(webview);
     divContainer.appendChild(divOptionContainer);
+    divContainer.appendChild(webview);
 
     //#region divContainer properties
     divContainer.setAttribute("class", "dialog-tab");
@@ -65,8 +66,10 @@ function dialogTab(linkUrl) {
     divContainer.style.transitionTimingFunction = "ease";
     divContainer.style.transitionDelay = "0s";
 
-    divContainer.addEventListener("click", function () {
-        this.remove();
+    divContainer.addEventListener("click", function (event) {
+        if (event.target === this) {
+            this.remove();
+        }
     });
     //#endregion
 
@@ -78,13 +81,13 @@ function dialogTab(linkUrl) {
 
 // Creates context menu item for open in dialog tab
 function createContextMenuOption() {
-    var option = {
+    var properties = {
         "id": "dialog-tab",
         "title": "Open Link in Dialog Tab",
         "contexts": ["link"]
     };
 
-    chrome.contextMenus.create(option);
+    chrome.contextMenus.create(properties);
 
     chrome.contextMenus.onClicked.addListener(function (itemInfo) {
         if (itemInfo.menuItemId === "dialog-tab") {
@@ -93,9 +96,28 @@ function createContextMenuOption() {
     });
 }
 
-function showWebviewOptions(webViewId) {
-    var webview = document.getElementById(webViewId);
-    // webview.get
+function showWebviewOptions(webviewId, thisElement) {
+    var inputId = "input-" + webviewId;
+    if (document.getElementById(inputId) === undefined) {
+        var webviewSrc = document.getElementById(webviewId).src;
+        var input = document.createElement('input', 'text');
+        var buttonNewTab = document.createElement('button');
+        var buttonBackgroundTab = document.createElement('button');
+
+        input.style.background = "transparent";
+        input.textContent = webviewSrc;
+        input.id = inputId;
+        buttonNewTab.style.background = "transparent";
+        buttonBackgroundTab.style.background = "transparent";
+        buttonNewTab.textContent = "New";
+        buttonBackgroundTab.textContent = "Back";
+
+        thisElement.appendChild(input);
+        thisElement.appendChild(buttonNewTab);
+        thisElement.appendChild(buttonBackgroundTab);
+
+        console.log(webview.src, thisElement);
+    }
 }
 
 // Returns a random, verified id. But it might possible to keep track of ids with global variable 
@@ -108,6 +130,6 @@ function getWebviewId() {
 }
 
 function getSvgContent() {
-    return "<svg id=\"optionsIco\" aria-hidden=\"true\" focusable=\"false\" data-prefix=\"fas\" data-icon=\"ellipsis-h\" class=\"svg-inline--fa fa-ellipsis-h fa-w-16\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\"><path fill=\"currentColor\" d=\"M328 256c0 39.8-32.2 72-72 72s-72-32.2-72-72 32.2-72 72-72 72 32.2 72 72zm104-72c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72zm-352 0c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72z\"></path></svg>";
+    return "<svg id=\"optionsIco\" aria-hidden=\"true\" focusable=\"false\" data-prefix=\"fas\" data-icon=\"ellipsis-h\" class=\"svg-inline--fa fa-ellipsis-h fa-w-16\" style=\"width: 30px\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\"><path fill=\"currentColor\" d=\"M328 256c0 39.8-32.2 72-72 72s-72-32.2-72-72 32.2-72 72-72 72 32.2 72 72zm104-72c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72zm-352 0c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72z\"></path></svg>";
 }
 
