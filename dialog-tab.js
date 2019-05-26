@@ -36,6 +36,9 @@ function dialogTab(linkUrl) {
     webview.addEventListener("loadstop", function () {
         this.textContent = "";
     });
+    webview.addEventListener("contentload", function () {
+        this.executeScript({ code: "document.body.style.fontSize = '42';" })
+    });
     //#endregion 
 
     //#region divOptionContainer properties
@@ -46,7 +49,11 @@ function dialogTab(linkUrl) {
     divOptionContainer.style.zIndex = "1160";
     divOptionContainer.innerHTML = getSvgContent();
 
-    divOptionContainer.addEventListener("mouseover", showWebviewOptions(webviewId, divOptionContainer));
+    divOptionContainer.addEventListener("mouseover", function (event) {
+        if (event.target === this) {
+            showWebviewOptions(webviewId, this);
+        }
+    });
     //#endregion
 
     divContainer.appendChild(divOptionContainer);
@@ -98,38 +105,48 @@ function createContextMenuOption() {
 
 function showWebviewOptions(webviewId, thisElement) {
     var inputId = "input-" + webviewId;
-    if (document.getElementById(inputId) === undefined) {
+    console.log((document.getElementById(inputId) === null), webviewId);
+    if (document.getElementById(inputId) === null) {
         var webviewSrc = document.getElementById(webviewId).src;
         var input = document.createElement('input', 'text');
         var buttonNewTab = document.createElement('button');
         var buttonBackgroundTab = document.createElement('button');
 
         input.style.background = "transparent";
-        input.textContent = webviewSrc;
+        input.style.color = "while";
+        input.style.border = "unset";
+        input.style.width = "30%";
+        input.style.margin = "0 0.5rem 0 0.5rem";
+        input.value = webviewSrc;
         input.id = inputId;
         buttonNewTab.style.background = "transparent";
-        buttonBackgroundTab.style.background = "transparent";
+        buttonNewTab.style.margin = "0 0.5rem 0 0.5rem";
+        buttonNewTab.style.border = "unset";
         buttonNewTab.textContent = "New";
+
+        buttonBackgroundTab.style.background = "transparent";
+        buttonBackgroundTab.style.margin = "0 0.5rem 0 0.5rem";
+        buttonBackgroundTab.style.border = "unset";
         buttonBackgroundTab.textContent = "Back";
 
-        thisElement.appendChild(input);
+        thisElement.insertBefore(input, thisElement.firstChild);
         thisElement.appendChild(buttonNewTab);
         thisElement.appendChild(buttonBackgroundTab);
 
-        console.log(webview.src, thisElement);
+        console.log(webviewSrc, thisElement);
     }
 }
 
 // Returns a random, verified id. But it might possible to keep track of ids with global variable 
 function getWebviewId() {
     var tempId = 0;
-    while (document.getElementById("dialog-" + tempId) === undefined) {
+    while (document.getElementById("dialog-" + tempId) === null) {
         tempId = Math.floor(Math.random() * 1000 + 1);
     }
     return tempId;
 }
 
 function getSvgContent() {
-    return "<svg id=\"optionsIco\" aria-hidden=\"true\" focusable=\"false\" data-prefix=\"fas\" data-icon=\"ellipsis-h\" class=\"svg-inline--fa fa-ellipsis-h fa-w-16\" style=\"width: 30px\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\"><path fill=\"currentColor\" d=\"M328 256c0 39.8-32.2 72-72 72s-72-32.2-72-72 32.2-72 72-72 72 32.2 72 72zm104-72c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72zm-352 0c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72z\"></path></svg>";
+    return "<svg id=\"optionsIco\" aria-hidden=\"true\" focusable=\"false\" data-prefix=\"fas\" data-icon=\"ellipsis-h\" class=\"svg-inline--fa fa-ellipsis-h fa-w-16\" style=\"width: 25px;     vertical-align: middle;\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\"><path fill=\"currentColor\" d=\"M328 256c0 39.8-32.2 72-72 72s-72-32.2-72-72 32.2-72 72-72 72 32.2 72 72zm104-72c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72zm-352 0c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72z\"></path></svg>";
 }
 
