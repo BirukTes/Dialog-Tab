@@ -50,7 +50,7 @@ function dialogTab(linkUrl) {
     divOptionContainer.style.zIndex = "1160";
     divOptionContainer.innerHTML = getEllipsisContent();
 
-    divOptionContainer.firstElementChild.addEventListener("mouseover", function (event) {
+    divOptionContainer.firstElementChild.addEventListener("mouseover", function () {
         showWebviewOptions(webviewId, divOptionContainer);
     });
     //#endregion
@@ -102,6 +102,7 @@ function createContextMenuOption() {
     });
 }
 
+// Displays open in tab buttons and current url in input element
 function showWebviewOptions(webviewId, thisElement) {
     var inputId = "input-" + webviewId;
     console.log((document.getElementById(inputId) === null), webviewId);
@@ -111,22 +112,33 @@ function showWebviewOptions(webviewId, thisElement) {
         var buttonNewTab = document.createElement('button');
         var buttonBackgroundTab = document.createElement('button');
 
+        input.value = webviewSrc;
+        input.id = inputId;
+        input.setAttribute("readonly", "");
         input.style.background = "transparent";
         input.style.color = "white";
         input.style.border = "unset";
         input.style.width = "20%";
         input.style.margin = "0 0.5rem 0 0.5rem";
-        input.value = webviewSrc;
-        input.id = inputId;
         buttonNewTab.style.background = "transparent";
         buttonNewTab.style.margin = "0 0.5rem 0 0.5rem";
         buttonNewTab.style.border = "unset";
         buttonNewTab.innerHTML = getNewtabContent();
+        buttonNewTab.addEventListener("click", function (event) {
+            if (event.target === this || this.firstChild) {
+                openNewTab(inputId, true);
+            }
+        });
 
         buttonBackgroundTab.style.background = "transparent";
         buttonBackgroundTab.style.margin = "0 0.5rem 0 0.5rem";
         buttonBackgroundTab.style.border = "unset";
         buttonBackgroundTab.innerHTML = getBacktabContent();
+        buttonBackgroundTab.addEventListener("click", function (event) {
+            if (event.target === this || this.firstChild) {
+                openNewTab(inputId, false);
+            }
+        });
 
         thisElement.appendChild(buttonNewTab);
         thisElement.appendChild(buttonBackgroundTab);
@@ -136,7 +148,7 @@ function showWebviewOptions(webviewId, thisElement) {
     }
 }
 
-// Returns a random, verified id. But it might possible to keep track of ids with global variable 
+// Returns a random, verified id.
 function getWebviewId() {
     var tempId = 0;
     while (true) {
@@ -148,12 +160,27 @@ function getWebviewId() {
     return tempId;
 }
 
-function getEllipsisContent() {
-    return "<svg id=\"optionsIco\" aria-hidden=\"true\" focusable=\"false\" data-prefix=\"fas\" data-icon=\"ellipsis-h\" class=\"svg-inline--fa fa-ellipsis-h fa-w-16\" style=\"width: 25px;     vertical-align: middle;\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\"><path fill=\"currentColor\" d=\"M328 256c0 39.8-32.2 72-72 72s-72-32.2-72-72 32.2-72 72-72 72 32.2 72 72zm104-72c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72zm-352 0c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72z\"></path></svg>";
+// Opens a new chrome tab with specified active boolean value
+function openNewTab(inputId, active) {
+    var url = document.getElementById(inputId).value;
+
+    chrome.tabs.create({
+        "url": url,
+        "active": active
+    });
 }
+
+// Returns string of ellipsis svg icon
+function getEllipsisContent() {
+    return "<svg id=\"optionsIco\" aria-hidden=\"true\" focusable=\"false\" data-prefix=\"fas\" data-icon=\"ellipsis-h\" class=\"svg-inline--fa fa-ellipsis-h fa-w-16\" style=\"width: 25px;     vertical-align: middle; margin: 0 0.5rem;\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\"><path fill=\"currentColor\" d=\"M328 256c0 39.8-32.2 72-72 72s-72-32.2-72-72 32.2-72 72-72 72 32.2 72 72zm104-72c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72zm-352 0c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72z\"></path></svg>";
+}
+
+// Returns string of external link alt svg icon
 function getNewtabContent() {
     return "<svg aria-hidden=\"true\" focusable=\"false\" data-prefix=\"fas\" data-icon=\"external-link-alt\" class=\"svg-inline--fa fa-external-link-alt fa-w-18\" style=\"width: 25px;\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 576 512\"><path fill=\"currentColor\" d=\"M576 24v127.984c0 21.461-25.96 31.98-40.971 16.971l-35.707-35.709-243.523 243.523c-9.373 9.373-24.568 9.373-33.941 0l-22.627-22.627c-9.373-9.373-9.373-24.569 0-33.941L442.756 76.676l-35.703-35.705C391.982 25.9 402.656 0 424.024 0H552c13.255 0 24 10.745 24 24zM407.029 270.794l-16 16A23.999 23.999 0 0 0 384 303.765V448H64V128h264a24.003 24.003 0 0 0 16.97-7.029l16-16C376.089 89.851 365.381 64 344 64H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V287.764c0-21.382-25.852-32.09-40.971-16.97z\"></path></svg>";
 }
+
+// Returns string of external link square alt svg icon
 function getBacktabContent() {
     return "<svg aria-hidden=\"true\" focusable=\"false\" data-prefix=\"fas\" data-icon=\"external-link-square-alt\" class=\"svg-inline--fa fa-external-link-square-alt fa-w-14\" style=\"width: 21px;\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 448 512\"><path fill=\"currentColor\" d=\"M448 80v352c0 26.51-21.49 48-48 48H48c-26.51 0-48-21.49-48-48V80c0-26.51 21.49-48 48-48h352c26.51 0 48 21.49 48 48zm-88 16H248.029c-21.313 0-32.08 25.861-16.971 40.971l31.984 31.987L67.515 364.485c-4.686 4.686-4.686 12.284 0 16.971l31.029 31.029c4.687 4.686 12.285 4.686 16.971 0l195.526-195.526 31.988 31.991C358.058 263.977 384 253.425 384 231.979V120c0-13.255-10.745-24-24-24z\"></path></svg>";
 }
