@@ -87,17 +87,30 @@ function dialogTab(linkUrl) {
 
 // Creates context menu item for open in dialog tab
 function createContextMenuOption() {
-    var properties = {
-        "id": "dialog-tab",
+    var propertiesLink = {
+        "id": "dialog-tab-link",
         "title": "Open Link in Dialog Tab",
         "contexts": ["link"]
     };
 
-    chrome.contextMenus.create(properties);
+    var propertiesSelection = {
+        "id": "dialog-tab-select",
+        "title": "Search with G in Dialog Tab",
+        "contexts": ["selection"]
+    };
+
+    chrome.contextMenus.create(propertiesLink);
+    chrome.contextMenus.create(propertiesSelection);
 
     chrome.contextMenus.onClicked.addListener(function (itemInfo) {
-        if (itemInfo.menuItemId === "dialog-tab") {
+        if (itemInfo.menuItemId === "dialog-tab-link") {
             dialogTab(itemInfo.linkUrl);
+        }
+
+        if (itemInfo.menuItemId === "dialog-tab-select") {
+            var gSearch = "https://www.google.com/search?q=" + (itemInfo.selectionText.replace(" ", "%20"));
+
+            dialogTab(gSearch);
         }
     });
 }
@@ -184,4 +197,3 @@ function getNewtabContent() {
 function getBacktabContent() {
     return "<svg aria-hidden=\"true\" focusable=\"false\" data-prefix=\"fas\" data-icon=\"external-link-square-alt\" class=\"svg-inline--fa fa-external-link-square-alt fa-w-14\" style=\"width: 21px;\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 448 512\"><path fill=\"currentColor\" d=\"M448 80v352c0 26.51-21.49 48-48 48H48c-26.51 0-48-21.49-48-48V80c0-26.51 21.49-48 48-48h352c26.51 0 48 21.49 48 48zm-88 16H248.029c-21.313 0-32.08 25.861-16.971 40.971l31.984 31.987L67.515 364.485c-4.686 4.686-4.686 12.284 0 16.971l31.029 31.029c4.687 4.686 12.285 4.686 16.971 0l195.526-195.526 31.988 31.991C358.058 263.977 384 253.425 384 231.979V120c0-13.255-10.745-24-24-24z\"></path></svg>";
 }
-
