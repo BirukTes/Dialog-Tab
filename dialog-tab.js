@@ -12,9 +12,11 @@ setTimeout(function wait() {
 // Opens a link in a dialog like display in the current visible tab
 function dialogTab(linkUrl) {
     var webview = document.createElement("webview");
+    var webviewId = "dialog-" + getWebviewId();
     var divOptionContainer = document.createElement("div");
     var divContainer = document.createElement("div");
-    var webviewId = "dialog-" + getWebviewId();
+    var progressBarContainer = document.createElement("div");
+    var progressBar = document.createElement("div");
 
     //#region webview properties
     webview.setAttribute("src", linkUrl);
@@ -27,18 +29,18 @@ function dialogTab(linkUrl) {
 
     webview.addEventListener("loadstart", function () {
         this.style.backgroundColor = "white";
-        this.style.fontSize = "10rem";
-        this.style.textAlign = "center";
-        this.style.color = "grey";
-        // May not be working
-        this.textContent = "Loading...";
-        console.log("id: ", "input-" + this.id, this.src);
+        var progress = document.getElementById("progressBar");
+        progress.style.display = "block";
+
         if (document.getElementById("input-" + this.id) !== null) {
             document.getElementById("input-" + this.id).value = this.src;
         }
     });
     webview.addEventListener("loadstop", function () {
-        this.textContent = "";
+        document.getElementById("progressBar").style.display = "none";
+    }); 
+    webview.addEventListener("contentload", function (event) {
+        console.log("content: ", event);
     });
     //#endregion 
 
@@ -54,9 +56,6 @@ function dialogTab(linkUrl) {
         showWebviewOptions(webviewId, divOptionContainer);
     });
     //#endregion
-
-    divContainer.appendChild(divOptionContainer);
-    divContainer.appendChild(webview);
 
     //#region divContainer properties
     divContainer.setAttribute("class", "dialog-tab");
@@ -78,6 +77,22 @@ function dialogTab(linkUrl) {
         }
     });
     //#endregion
+
+    //#region progressBarContainer properties
+    progressBarContainer.style.width = "77%";
+    progressBarContainer.style.margin = "1.3rem auto auto";
+
+    progressBar.id = "progressBar";
+    progressBar.style.height = "5px";
+    progressBar.style.width = "10%";
+    progressBar.style.backgroundColor = "#0080ff";
+    progressBar.style.borderRadius = "5px";
+    //#endregion
+
+    progressBarContainer.appendChild(progressBar);
+    divContainer.appendChild(divOptionContainer);
+    divContainer.appendChild(webview);
+    divContainer.appendChild(progressBarContainer);
 
     // Query for current tab and append divContainer
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
