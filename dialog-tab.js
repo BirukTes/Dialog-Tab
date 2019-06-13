@@ -32,8 +32,8 @@
 
 
     /**
-      *  Creates context menu item for open in dialog tab
-      */
+     *  Creates context menu item for open in dialog tab
+     */
     function createContextMenuOption() {
         chrome.contextMenus.create({
             'id': 'dialog-tab-link',
@@ -89,10 +89,13 @@
     }
 
     function dialogTabSearch(engineId, selectionText) {
-        var engine = searchEngineCollection.engines.find(function (engine) {
+        dialogTab(getEngine(engineId).url.replace(/%s/g, selectionText));
+    }
+
+    function getEngine(engineId) {
+        return searchEngineCollection.engines.find(function (engine) {
             return engine.id === engineId;
         });
-        dialogTab(engine.url.replace(/%s/g, selectionText));
     }
 
     /**
@@ -103,7 +106,9 @@
     function keyCombo(combination, extras) {
         const SHORTCUTS = {
             "Shift+Alt+Period": () => { /* Open Google Search in Dialog in Current Tab */
-                dialogTab("https://www.google.com/");
+                var e = getEngine(searchEngineCollection.default).url.split("?")[0];
+                console.log(e);
+                dialogTab(e);
             }
         };
 
