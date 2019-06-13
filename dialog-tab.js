@@ -32,7 +32,7 @@
 
 
     /**
-     *  Creates context menu item for open in dialog tab
+     * Creates context menu items for open in dialog tab
      */
     function createContextMenuOption() {
         chrome.contextMenus.create({
@@ -70,6 +70,9 @@
         });
     }
 
+    /**
+     * Creates sub-context menu items for select search engine menu item
+     */
     function createContextMenuSelectSearch() {
         searchEngineCollection.engines.filter(e => e.removed !== true).forEach(function (engine) {
             chrome.contextMenus.create({
@@ -81,6 +84,9 @@
         });
     }
 
+    /**
+     * Updates sub-context menu items for select search engine menu item
+     */
     function createOrRemoveContextMenuSelectSearch(oldValue) {
         oldValue.engines.filter(e => e.removed !== true).forEach(function (engine) {
             chrome.contextMenus.remove('select-search-dialog-tab' + engine.id);
@@ -88,10 +94,19 @@
         createContextMenuSelectSearch();
     }
 
+    /**
+     * Prepares url for search, calls dailogTab function
+     * @param {String} engineId engine id
+     * @param {int} selectionText text
+     */
     function dialogTabSearch(engineId, selectionText) {
         dialogTab(getEngine(engineId).url.replace(/%s/g, selectionText));
     }
 
+    /**
+     *  Returns engine from the collection variable with matching id
+     * @param {int} engineId engine id
+     */
     function getEngine(engineId) {
         return searchEngineCollection.engines.find(function (engine) {
             return engine.id === engineId;
