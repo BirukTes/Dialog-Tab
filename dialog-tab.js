@@ -155,19 +155,14 @@
 
         webview.addEventListener("loadstart", function () {
             this.style.backgroundColor = "white";
-            var progress = document.getElementById("progressBar");
-            progress.style.display = "block";
+            document.getElementById("progressBar-" + webviewId).style.display = "block";
 
             if (document.getElementById("input-" + this.id) !== null) {
                 document.getElementById("input-" + this.id).value = this.src;
             }
         });
         webview.addEventListener("loadstop", function () {
-            document.getElementById("progressBar").style.display = "none";
-        });
-        webview.addEventListener("contentload", function (event) {
-            // attempting to find out the progress required
-            console.log("content: ", event);
+            document.getElementById("progressBar-" + webviewId).style.display = "none";
         });
         //#endregion 
 
@@ -209,7 +204,7 @@
         progressBarContainer.style.width = "77%";
         progressBarContainer.style.margin = "1.3rem auto auto";
 
-        progressBar.id = "progressBar";
+        progressBar.id = "progressBar-" + webviewId;
         progressBar.style.height = "5px";
         progressBar.style.width = "10%";
         progressBar.style.backgroundColor = "#0080ff";
