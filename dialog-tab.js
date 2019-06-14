@@ -86,6 +86,7 @@
 
     /**
      * Updates sub-context menu items for select search engine menu item
+     * @param {Object} oldValue the value that is used as reference to old sub-menu items
      */
     function createOrRemoveContextMenuSelectSearch(oldValue) {
         oldValue.engines.filter(e => e.removed !== true).forEach(function (engine) {
@@ -96,16 +97,16 @@
 
     /**
      * Prepares url for search, calls dailogTab function
-     * @param {String} engineId engine id
-     * @param {int} selectionText text
+     * @param {String} engineId engine id of the engine to be used
+     * @param {int} selectionText the text to search
      */
     function dialogTabSearch(engineId, selectionText) {
         dialogTab(getEngine(engineId).url.replace(/%s/g, selectionText));
     }
 
     /**
-     *  Returns engine from the collection variable with matching id
-     * @param {int} engineId engine id
+     * Returns engine from the collection variable with matching id
+     * @param {int} engineId engine id of the required engine
      */
     function getEngine(engineId) {
         return searchEngineCollection.engines.find(function (engine) {
@@ -114,7 +115,7 @@
     }
 
     /**
-     * Handle a potential keyboard shortcut (from KeyboardMachine)
+     * Handle a potential keyboard shortcut (copy from KeyboardMachine)
      * @param {String} combination written in the form (CTRL+SHIFT+ALT+KEY)
      * @param {boolean} extras I don't know what this does, but it's an extra argument
      */
@@ -135,8 +136,7 @@
 
     /**
      * Opens a link in a dialog like display in the current visible tab
-     * @param {string} inputId is the id of the input containing current url
-     * @param {boolean} active indicates whether the tab is active or not (background tab)
+     * @param {string} linkUrl the url to load
      */
     function dialogTab(linkUrl) {
         var webview = document.createElement("webview");
