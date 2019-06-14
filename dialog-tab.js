@@ -32,7 +32,7 @@
 
 
     /**
-     * Creates context menu items for open in dialog tab
+     * Creates context menu items to open dialog tab
      */
     function createContextMenuOption() {
         chrome.contextMenus.create({
@@ -121,10 +121,8 @@
      */
     function keyCombo(combination, extras) {
         const SHORTCUTS = {
-            "Shift+Alt+Period": () => { /* Open Google Search in Dialog in Current Tab */
-                var e = getEngine(searchEngineCollection.default).url.split("?")[0];
-                console.log(e);
-                dialogTab(e);
+            "Shift+Alt+Period": () => { // Open Default Search Engine in Dialog
+                dialogTab(getEngine(searchEngineCollection.default).url.split("?")[0]);
             }
         };
 
@@ -223,10 +221,8 @@
         divContainer.appendChild(webview);
         divContainer.appendChild(progressBarContainer);
 
-        // Query for current tab and append divContainer
-        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-            document.getElementById(tabs[0].id).parentElement.appendChild(divContainer);
-        });
+        // Get for current tab and append divContainer
+        document.getElementsByClassName('active visible webpageview')[0].appendChild(divContainer);
     }
 
     /**
