@@ -182,8 +182,11 @@
             }
         });
         webview.addEventListener("loadstop", function () {
+            // Inject code, to remove links with _blank 
+            webview.executeScript({ code: "var links = document.querySelectorAll('a[target=\"_blank\"]'); console.log(links); for (var i = 0; i < links.length; i++) links[i].target = '';  console.log('links');" });
             document.getElementById("progressBar-" + webviewId).style.display = "none";
         });
+
         //#endregion 
 
         //#region divOptionContainer properties
