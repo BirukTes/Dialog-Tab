@@ -34,29 +34,31 @@
      * Creates context menu items to open dialog tab
      */
     function createContextMenuOption() {
+        const extSymbol = '| 🚀 ⧉ | ';
+
         chrome.contextMenus.create({
             'id': 'dialog-tab-link',
-            'title': '[Dialog Tab] Open Link',
+            'title': extSymbol + ' Open Link',
             'contexts': ['link']
         });
         chrome.contextMenus.create({
             'id': 'search-dialog-tab',
-            'title': '[Dialog Tab] Search for "%s"',
+            'title': extSymbol + ' Search for "%s"',
             'contexts': ['selection']
         });
         chrome.contextMenus.create({
             'id': 'select-search-dialog-tab',
-            'title': '[Dialog Tab] Search with',
+            'title': extSymbol + ' Search with',
             'contexts': ['selection']
         });
         chrome.contextMenus.create({
             'id': 'media-dialog-tab',
-            'title': '[Dialog Tab] View',
+            'title': extSymbol + ' Media View',
             'contexts': ['image', 'video', 'audio']
         });
         chrome.contextMenus.create({
             'id': 'page-dialog-tab',
-            'title': '[Dialog Tab] Review',
+            'title': extSymbol + ' Page View',
             'contexts': ['page']
         });
 
@@ -64,18 +66,18 @@
 
         chrome.contextMenus.onClicked.addListener(function (itemInfo) {
             chrome.windows.getLastFocused(function (window) {
-                if (window.id === vivaldiWindowId && window.state !== 'minimized') {
+                if (window.id === vivaldiWindowId && window.state !== "minimized") {
                     if (itemInfo.menuItemId === "dialog-tab-link") {
                         dialogTab(itemInfo.linkUrl);
-                    } else if (itemInfo.menuItemId === 'search-dialog-tab') {
+                    } else if (itemInfo.menuItemId === "search-dialog-tab") {
                         var engineId = window.incognito ? searchEngineCollection.defaultPrivate : searchEngineCollection.default;
                         dialogTabSearch(engineId, itemInfo.selectionText);
-                    } else if (itemInfo.parentMenuItemId === 'select-search-dialog-tab') {
+                    } else if (itemInfo.parentMenuItemId === "select-search-dialog-tab") {
                         var engineId = itemInfo.menuItemId.substr(itemInfo.parentMenuItemId.length);
                         dialogTabSearch(engineId, itemInfo.selectionText);
-                    } else if (itemInfo.parentMenuItemId === 'media-dialog-tab') {
+                    } else if (itemInfo.menuItemId === "media-dialog-tab") {
                         dialogTab(itemInfo.srcUrl);
-                    } else if (itemInfo.parentMenuItemId === 'page-dialog-tab') {
+                    } else if (itemInfo.menuItemId === "page-dialog-tab") {
                         dialogTab(itemInfo.pageUrl);
                     }
                 }
@@ -164,7 +166,7 @@
         webview.style.height = "85%";
         webview.style.margin = "auto";
         webview.style.overflow = "hidden";
-        webview.style.borderRadius = "10px";
+        webview.style.borderRadius = "14px";
 
 
         webview.addEventListener('permissionrequest',
